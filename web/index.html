@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英文組み立て — 母語思考回路ビルダー</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SENTENCE BUILDER</div>
+    <h1>母語思考回路ビルダー</h1>
+    <p class="lead">ネイティブの順番＝<b>だれが → どうする（動詞）→ なにを</b>。動詞が文の形を決めます。
+      タイルをタップして、言いたいことを英語の語順で組み立てましょう。</p>
+  </header>
+
+  <!-- モード切替 -->
+  <nav id="modes" class="modes" role="tablist" aria-label="モード"></nav>
+
+  <!-- 必須フレーズ（phrasesモードのみ表示。中身は phrases.js が描画） -->
+  <section id="phrases" class="phrases hidden" aria-label="必須フレーズ"></section>
+
+  <!-- 逆クイズの出題（quizモードのみ表示） -->
+  <section id="quiz-prompt" class="quiz-prompt hidden" aria-live="polite"></section>
+
+  <!-- 文トレイ -->
+  <section class="tray-wrap" aria-label="組み立て中の文">
+    <div class="tray-label">組み立て中の文 <span id="tray-ord" class="ord"></span></div>
+    <div id="utterance" class="quiz-prompt hidden" style="margin:.2rem 0 .6rem;padding:.6rem .9rem;font-weight:700;font-size:1.15rem"></div>
+    <div id="tray" class="tray"></div>
+    <div id="tray-actions" class="tray-actions">
+      <button id="act-speak" class="act" data-act="speak">🔊 読み上げ</button>
+      <button class="act" data-act="jporder">🔀 日本語順で見る</button>
+      <button class="act" data-act="undo">↺ ひとつ戻す</button>
+      <button class="act" data-act="clear">✕ 全部消す</button>
+      <button id="act-quizcheck" class="act primary hidden" data-act="quizcheck">✓ 採点する</button>
+      <button id="act-quiznext" class="act hidden" data-act="quiznext">↻ 次の問題</button>
+    </div>
+  </section>
+
+  <!-- 時制・助動詞・否定 -->
+  <div id="controls" class="controls hidden"></div>
+
+  <!-- 思考ステッパー -->
+  <nav id="stepper" class="stepper" aria-label="組み立て手順"></nav>
+
+  <!-- 候補パネル -->
+  <section id="panel" class="panel-area" aria-label="単語候補"></section>
+
+  <!-- 文法スポット -->
+  <div id="hints" class="hints" aria-live="polite"></div>
+</div>
+
+<script src="sentence_builder_data.js"></script>
+<script src="grammar.js"></script>
+<script src="speech.js"></script>
+<script src="phrases.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

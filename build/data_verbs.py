@@ -1,0 +1,153 @@
+# -*- coding: utf-8 -*-
+"""動詞データ（Phase 1 コア厳選）。
+列: 言いたいこと, 意味グループ, サブグループ, 見出し語, コア語義, 活用・派生,
+    コロケーション・句動詞, 例文(EN), 例文(JP), 頻度ランク, レジスター, メモ
+頻度ランクは COCA lemma 動詞頻度に基づく概算（100+ は概略の目安）。
+"""
+
+ROWS = [
+    # ── 思考・意見 ──────────────────────────────────────────
+    ["〜だと思う", "思考・意見", "意見・見解", "think", "思う、考える", "thought/thought/thinking", "think about, think of, I think (that)…", "I think it's a good idea.", "いい考えだと思う。", "12", "日常", "最も一般的。that節を続けられる"],
+    ["〜だと信じる/たぶん〜だ", "思考・意見", "確信度：高", "believe", "信じる、〜だと思う", "believed/believed/believing", "believe in, hard to believe, I believe (that)…", "I believe he's honest.", "彼は正直だと思う。", "44", "日常", "thinkより確信が強い"],
+    ["たぶん〜だと思う（推測）", "思考・意見", "推測する", "guess", "推測する、〜だろう", "guessed/guessed/guessing", "I guess, guess what", "I guess she's about 30.", "彼女は30歳くらいかな。", "100+", "口語", "口語で「たぶん」。米口語で頻出"],
+    ["仮に〜だとする/たぶん", "思考・意見", "推測する", "suppose", "仮定する、〜だと思う", "supposed/supposed/supposing", "be supposed to, I suppose", "I suppose you're right.", "たぶん君が正しいね。", "78", "日常", "be supposed to=〜することになっている"],
+    ["よく考える/〜とみなす", "思考・意見", "熟考・判断", "consider", "熟考する、みなす", "considered/considered/considering", "consider doing, consider A as B", "We're considering moving.", "引っ越しを検討中だ。", "78", "ビジネス", "consider + -ing"],
+    ["〜かなと思う", "思考・意見", "疑問を抱く", "wonder", "〜かなと思う、不思議に思う", "wondered/wondered/wondering", "I wonder if/what/why…", "I wonder if it'll rain.", "雨が降るかなあ。", "100+", "日常", "遠回しな質問・依頼にも"],
+    ["〜を想像する", "思考・意見", "想像する", "imagine", "想像する", "imagined/imagined/imagining", "imagine doing, can't imagine", "I can't imagine living there.", "そこに住むなんて想像できない。", "100+", "日常", "imagine + -ing"],
+    ["〜を疑う/〜ではないと思う", "思考・意見", "確信度：低", "doubt", "疑う、〜でないと思う", "doubted/doubted/doubting", "I doubt (that)…, no doubt", "I doubt he'll come.", "彼は来ないと思う。", "100+", "日常", "否定的な見込みを表す"],
+    ["〜という意味だ/〜のつもり", "思考・意見", "意図・意味", "mean", "意味する、〜のつもり", "meant/meant/meaning", "I mean, mean to do, what do you mean", "I didn't mean to hurt you.", "傷つけるつもりはなかった。", "28", "日常", "I mean=つまり（言い直し）"],
+    ["〜だろうと予想する", "思考・意見", "予期する", "expect", "予期する、期待する", "expected/expected/expecting", "expect to do, as expected", "I expect he'll be late.", "彼は遅れると思う。", "85", "ビジネス", "予定・見込みの表現"],
+
+    # ── 伝達・発話 ──────────────────────────────────────────
+    ["〜と言う", "伝達・発話", "述べる", "say", "言う、述べる", "said/said/saying", "say that…, say to, so to speak", "She said she was tired.", "彼女は疲れたと言った。", "4", "日常", "内容を言う。相手はto+人"],
+    ["（人に）〜を伝える/教える", "伝達・発話", "伝える", "tell", "伝える、教える", "told/told/telling", "tell A B, tell A to do", "Tell me the truth.", "本当のことを教えて。", "18", "日常", "tell+人+内容。命令にも"],
+    ["〜を尋ねる", "伝達・発話", "質問する", "ask", "尋ねる、頼む", "asked/asked/asking", "ask for, ask about, ask A to do", "Can I ask you something?", "ちょっと聞いてもいい？", "19", "日常", "依頼(ask A to do)にも"],
+    ["（言語を）話す", "伝達・発話", "話す", "speak", "話す（言語・演説）", "spoke/spoken/speaking", "speak English, speak to, speak up", "Do you speak English?", "英語を話せますか？", "66", "日常", "言語・フォーマルな発話"],
+    ["おしゃべりする", "伝達・発話", "会話する", "talk", "話す、しゃべる", "talked/talked/talking", "talk about, talk to, talk over", "Let's talk about it later.", "あとで話そう。", "33", "日常", "双方向の会話"],
+    ["〜を説明する", "伝達・発話", "説明する", "explain", "説明する", "explained/explained/explaining", "explain to, explain how/why", "Let me explain the plan.", "計画を説明させて。", "100+", "ビジネス", "explain 人 は不可→explain to 人"],
+    ["ちょっと〜に触れる", "伝達・発話", "言及する", "mention", "言及する、口に出す", "mentioned/mentioned/mentioning", "mention that…, not to mention", "He mentioned your name.", "彼が君の名前を出したよ。", "100+", "ビジネス", "軽く触れる"],
+    ["〜がどんなものか説明する", "伝達・発話", "描写する", "describe", "描写する、説明する", "described/described/describing", "describe as, describe how", "Can you describe him?", "彼の特徴を言える？", "100+", "日常", "特徴・様子を述べる"],
+    ["〜に答える", "伝達・発話", "応答する", "answer", "答える", "answered/answered/answering", "answer the phone, answer to", "She didn't answer my email.", "彼女はメールに返信しなかった。", "100+", "日常", "電話・質問に答える"],
+    ["（人を）呼ぶ/電話する", "伝達・発話", "呼ぶ・電話", "call", "呼ぶ、電話する", "called/called/calling", "call back, call off, be called", "Call me tonight.", "今夜電話して。", "25", "日常", "call off=中止する"],
+    ["〜について話し合う", "伝達・発話", "議論する", "discuss", "話し合う、議論する", "discussed/discussed/discussing", "discuss with, discuss about(×)", "We discussed the budget.", "予算について話し合った。", "100+", "ビジネス", "discuss about は誤り"],
+
+    # ── 依頼・提案・許可 ────────────────────────────────────
+    ["〜してはどうかと提案する", "依頼・提案・許可", "提案する", "suggest", "提案する", "suggested/suggested/suggesting", "suggest doing, suggest that…", "I suggest taking a break.", "休憩を取ることを提案します。", "93", "ビジネス", "suggest to do は不可→suggest doing"],
+    ["〜を勧める", "依頼・提案・許可", "推奨する", "recommend", "推薦する、勧める", "recommended/…/recommending", "recommend doing, highly recommend", "I recommend this book.", "この本を勧めるよ。", "100+", "ビジネス", "強い推奨"],
+    ["〜しましょうかと申し出る", "依頼・提案・許可", "申し出る", "offer", "申し出る、提供する", "offered/offered/offering", "offer to do, offer help", "He offered to help me.", "彼は手伝うと言ってくれた。", "75", "日常", "offer to do=自発的に申し出る"],
+    ["〜を招く", "依頼・提案・許可", "招待する", "invite", "招待する", "invited/invited/inviting", "invite A to B, invite over", "They invited us to dinner.", "夕食に招いてくれた。", "100+", "日常", "invite over=家に招く"],
+    ["〜を許可する", "依頼・提案・許可", "許可する", "allow", "許す、可能にする", "allowed/allowed/allowing", "allow A to do, be allowed to", "They don't allow pets.", "ペットは禁止だ。", "68", "ビジネス", "allow A to do"],
+    ["（人に）〜させる", "依頼・提案・許可", "許可する", "let", "〜させる（許可）", "let/let/letting", "let me, let's, let go", "Let me check my calendar.", "予定を確認させて。", "30", "日常", "let+人+動詞原形。Let's提案"],
+    ["〜を手伝う", "依頼・提案・許可", "援助する", "help", "助ける、役立つ", "helped/helped/helping", "help A (to) do, help out", "Can you help me move?", "引っ越しを手伝ってくれる？", "32", "日常", "help+人+(to)do"],
+
+    # ── 移動・動作 ──────────────────────────────────────────
+    ["どこかへ行く", "移動・動作", "移動する", "go", "行く", "went/gone/going", "go to, go on, go out, be going to", "I go to work by train.", "電車で通勤している。", "7", "日常", "be going to=〜する予定"],
+    ["こちらへ来る", "移動・動作", "移動する", "come", "来る", "came/come/coming", "come from, come back, come up", "Come here for a second.", "ちょっとこっち来て。", "11", "日常", "話し手の方へ"],
+    ["動く/引っ越す", "移動・動作", "移動させる", "move", "動く、引っ越す", "moved/moved/moving", "move on, move in/out, move forward", "We moved to Osaka.", "大阪に引っ越した。", "41", "日常", "move on=先へ進む"],
+    ["走る/経営する", "移動・動作", "走る・運営", "run", "走る、経営する", "ran/run/running", "run out (of), run into, run a shop", "We're running out of time.", "時間がなくなってきた。", "40", "日常", "run a business=経営する"],
+    ["歩く", "移動・動作", "移動する", "walk", "歩く", "walked/walked/walking", "walk to, walk around, take a walk", "Let's walk to the station.", "駅まで歩こう。", "73", "日常", ""],
+    ["その場を去る/〜を残す", "移動・動作", "離れる", "leave", "去る、残す、置き忘れる", "left/left/leaving", "leave for, leave behind, leave A alone", "I left my phone at home.", "家にスマホを忘れた。", "24", "日常", "leave A alone=そっとしておく"],
+    ["〜に到着する", "移動・動作", "到着する", "arrive", "到着する", "arrived/arrived/arriving", "arrive at/in, arrive on time", "We arrived at 9.", "9時に着いた。", "100+", "日常", "arrive at(狭)/in(広)"],
+    ["戻る/返す", "移動・動作", "戻る", "return", "戻る、返す", "returned/returned/returning", "return to, in return", "I'll return the book tomorrow.", "明日その本を返すよ。", "100+", "ビジネス", "go backより堅い"],
+    ["〜についていく/従う", "移動・動作", "追う・従う", "follow", "ついていく、従う", "followed/followed/following", "follow up, as follows", "Follow me, please.", "こちらへどうぞ。", "63", "ビジネス", "follow up=あとで確認する"],
+    ["〜を持ってくる", "移動・動作", "運ぶ", "bring", "持ってくる、もたらす", "brought/brought/bringing", "bring up, bring back, bring together", "Bring an umbrella.", "傘を持ってきて。", "46", "日常", "bring up=話題に出す/育てる"],
+    ["（手に）取る/連れて行く", "移動・動作", "取る・連れる", "take", "取る、連れて行く、（時間が）かかる", "took/taken/taking", "take off, take care of, take time", "It takes 10 minutes.", "10分かかる。", "9", "日常", "多義。take care of=世話する"],
+    ["〜を運ぶ", "移動・動作", "運ぶ", "carry", "運ぶ、携帯する", "carried/carried/carrying", "carry out, carry on", "Can you carry this bag?", "このかばん運べる？", "100+", "日常", "carry out=実行する"],
+    ["〜を送る", "移動・動作", "送る", "send", "送る", "sent/sent/sending", "send back, send out, send A B", "I'll send you the file.", "ファイルを送るね。", "84", "ビジネス", "send A B / send B to A"],
+    ["〜に到達する/連絡がつく", "移動・動作", "到達する", "reach", "届く、到達する、連絡する", "reached/reached/reaching", "reach for, reach out to", "You can reach me by email.", "メールで連絡がつくよ。", "90", "ビジネス", "reach out=連絡を取る"],
+    ["〜を置く", "移動・動作", "置く", "put", "置く", "put/put/putting", "put on, put off, put up with", "Put it on the desk.", "机の上に置いて。", "22", "日常", "put off=延期。put up with=我慢"],
+    ["〜に会う", "移動・動作", "会う", "meet", "会う、出会う", "met/met/meeting", "meet up, nice to meet you", "Let's meet at noon.", "正午に会おう。", "54", "日常", "初対面は nice to meet you"],
+
+    # ── 変化・状態変化 ──────────────────────────────────────
+    ["〜になる", "変化・状態変化", "〜になる", "become", "〜になる", "became/become/becoming", "become + 名/形", "It became popular.", "それは人気になった。", "27", "日常", "変化の結果を表す"],
+    ["変わる/〜を変える", "変化・状態変化", "変える", "change", "変わる、変える", "changed/changed/changing", "change into, change one's mind", "I changed my mind.", "気が変わった。", "59", "日常", "change one's mind=考えを変える"],
+    ["だんだん成長する/増える", "変化・状態変化", "増大する", "grow", "育つ、増える", "grew/grown/growing", "grow up, grow into", "Sales grew last year.", "売上が去年伸びた。", "71", "ビジネス", "grow up=大人になる"],
+    ["〜が増える", "変化・状態変化", "増大する", "increase", "増える、増やす", "increased/…/increasing", "increase by/to, on the increase", "Prices increased sharply.", "物価が急に上がった。", "100+", "ビジネス", "by=増加幅 / to=到達点"],
+    ["〜になる/〜を得る", "変化・状態変化", "〜になる", "get", "得る、〜になる、着く", "got/gotten/getting", "get to, get up, get along", "It's getting cold.", "寒くなってきた。", "5", "日常", "超多義。get+形=〜になる"],
+    ["〜に変わる/曲がる", "変化・状態変化", "転じる", "turn", "回る、変わる、曲がる", "turned/turned/turning", "turn on/off, turn out, turn into", "Turn left at the corner.", "角を左に曲がって。", "34", "日常", "turn out=結局〜になる"],
+    ["上がる", "変化・状態変化", "上昇する", "rise", "上がる、昇る", "rose/risen/rising", "rise to, on the rise", "The sun rises in the east.", "太陽は東から昇る。", "94", "書き言葉", "自動詞。raiseは他動詞"],
+    ["下がる/落ちる", "変化・状態変化", "下降する", "fall", "落ちる、下がる", "fell/fallen/falling", "fall down, fall asleep, fall behind", "Prices fell last month.", "先月物価が下がった。", "88", "日常", "fall asleep=眠りに落ちる"],
+    ["〜がよくなる/改善する", "変化・状態変化", "改善する", "improve", "改善する、上達する", "improved/…/improving", "improve on, room to improve", "My English is improving.", "英語が上達してきた。", "100+", "ビジネス", "上達・向上"],
+    ["〜を発展させる", "変化・状態変化", "発展する", "develop", "発達する、開発する", "developed/…/developing", "develop into, developing country", "They developed a new app.", "新しいアプリを開発した。", "100+", "ビジネス", "開発・成長"],
+    ["壊れる/〜を壊す", "変化・状態変化", "破壊する", "break", "壊れる、壊す、破る", "broke/broken/breaking", "break down, break up, take a break", "My laptop broke.", "ノートPCが壊れた。", "100+", "日常", "break down=故障する"],
+
+    # ── 授受・所有 ──────────────────────────────────────────
+    ["（人に）〜をあげる", "授受・所有", "与える", "give", "与える", "gave/given/giving", "give up, give back, give A B", "Give me a second.", "ちょっと待って。", "15", "日常", "give up=あきらめる"],
+    ["〜を持っている", "授受・所有", "所有する", "have", "持っている、〜がある", "had/had/having", "have to, have A do, have got", "Do you have a minute?", "少し時間ある？", "2", "日常", "have to=〜しなければ"],
+    ["〜を抱える/開催する", "授受・所有", "保持する", "hold", "持つ、開催する", "held/held/holding", "hold on, hold up, hold a meeting", "Hold on a second.", "ちょっと待って。", "45", "日常", "hold on=電話を切らずに待つ"],
+    ["〜を受け取る", "授受・所有", "受け取る", "receive", "受け取る", "received/received/receiving", "receive from, receive an email", "I received your message.", "メッセージ受け取ったよ。", "100+", "ビジネス", "getより堅い"],
+    ["〜を提供する", "授受・所有", "提供する", "provide", "提供する", "provided/provided/providing", "provide A with B, provide for", "We provide free wifi.", "無料wifiを提供しています。", "49", "ビジネス", "provide A with B"],
+    ["〜を払う", "授受・所有", "支払う", "pay", "払う", "paid/paid/paying", "pay for, pay off, pay attention", "I'll pay for lunch.", "昼食は僕が払うよ。", "53", "日常", "pay attention=注意を払う"],
+    ["〜を買う", "授受・所有", "購入する", "buy", "買う", "bought/bought/buying", "buy A B, buy from", "I bought a new phone.", "新しいスマホを買った。", "80", "日常", "buy A B=AにBを買う"],
+    ["〜を売る", "授受・所有", "販売する", "sell", "売る、売れる", "sold/sold/selling", "sell out, sell well", "These sell well.", "これらはよく売れる。", "96", "ビジネス", "sell out=売り切れる"],
+    ["〜を失う/負ける", "授受・所有", "失う", "lose", "失う、負ける、道に迷う", "lost/lost/losing", "lose weight, get lost, lose track", "Don't lose your ticket.", "チケットをなくさないで。", "52", "日常", "get lost=道に迷う"],
+    ["〜を勝ち取る", "授受・所有", "獲得する", "win", "勝つ、勝ち取る", "won/won/winning", "win a prize, win over", "We won the game.", "試合に勝った。", "74", "日常", "beat=相手に勝つ"],
+    ["（時間・金を）費やす", "授受・所有", "費やす", "spend", "費やす、過ごす", "spent/spent/spending", "spend on, spend time doing", "I spent an hour on it.", "それに1時間かけた。", "70", "日常", "spend + 時間 + -ing"],
+
+    # ── 知覚・感覚 ──────────────────────────────────────────
+    ["〜が見える/わかる", "知覚・感覚", "見る（自然に）", "see", "見える、わかる、会う", "saw/seen/seeing", "see off, I see, see A doing", "I see what you mean.", "言いたいことわかるよ。", "10", "日常", "I see=なるほど。理解も表す"],
+    ["〜を見る/〜に見える", "知覚・感覚", "目を向ける", "look", "見る、〜に見える", "looked/looked/looking", "look at, look for, look like", "You look tired.", "疲れてるみたいだね。", "13", "日常", "look like=〜のように見える"],
+    ["じっと〜を見る", "知覚・感覚", "注視する", "watch", "見守る、注意する", "watched/watched/watching", "watch out, watch TV", "Watch out for cars.", "車に気をつけて。", "62", "日常", "watch out=気をつけろ"],
+    ["〜が聞こえる", "知覚・感覚", "聞く（自然に）", "hear", "聞こえる、耳にする", "heard/heard/hearing", "hear about, hear from", "I heard about your news.", "君のこと聞いたよ。", "38", "日常", "hear from=〜から連絡が来る"],
+    ["〜に耳を傾ける", "知覚・感覚", "耳を傾ける", "listen", "聞く（意識的に）", "listened/…/listening", "listen to, listen up", "Listen to this song.", "この曲を聴いて。", "100+", "日常", "listen to（toが必要）"],
+    ["〜と感じる", "知覚・感覚", "感じる", "feel", "感じる、思う", "felt/felt/feeling", "feel like, feel free", "I feel like coffee.", "コーヒーが飲みたい気分。", "22", "日常", "feel like doing=〜したい気分"],
+    ["〜に気づく", "知覚・感覚", "気づく", "notice", "気づく", "noticed/noticed/noticing", "notice that…, take notice", "I noticed a mistake.", "ミスに気づいた。", "100+", "日常", "無意識に気づく"],
+    ["〜のように思える", "知覚・感覚", "〜のようだ", "seem", "〜のように思える", "seemed/seemed/seeming", "seem to do, it seems that…", "It seems fine to me.", "私には問題なさそう。", "21", "日常", "話者の主観的印象"],
+    ["〜のように見える/現れる", "知覚・感覚", "〜に見える", "appear", "現れる、〜に見える", "appeared/appeared/appearing", "appear to do, it appears that…", "She appeared calm.", "彼女は落ち着いて見えた。", "79", "書き言葉", "seemより客観・堅い"],
+    ["〜に聞こえる/〜そうだ", "知覚・感覚", "〜に聞こえる", "sound", "〜に聞こえる、〜そうだ", "sounded/sounded/sounding", "sound like, sounds good", "That sounds great!", "それいいね！", "100+", "日常", "sounds good=いいね（同意）"],
+
+    # ── 感情・態度 ──────────────────────────────────────────
+    ["〜が好きだ", "感情・態度", "好む", "like", "好む", "liked/liked/liking", "would like, feel like, look like", "I'd like a coffee.", "コーヒーをください。", "42", "日常", "would like=丁寧な want"],
+    ["〜が大好きだ", "感情・態度", "強く好む", "love", "大好きだ、愛する", "loved/loved/loving", "love doing, I'd love to", "I'd love to join you.", "ぜひ参加したい。", "77", "日常", "I'd love to=喜んで"],
+    ["〜が欲しい/〜したい", "感情・態度", "欲する", "want", "欲しい、〜したい", "wanted/wanted/wanting", "want to do, want A to do", "I want to go home.", "家に帰りたい。", "14", "日常", "want A to do=Aに〜してほしい"],
+    ["〜だといいな", "感情・態度", "願う", "wish", "願う、〜ならいいのに", "wished/wished/wishing", "wish for, I wish I could", "I wish I could help.", "手伝えたらいいのだけど。", "100+", "日常", "wish+仮定法=非現実の願望"],
+    ["〜が必要だ", "感情・態度", "必要とする", "need", "必要とする", "needed/needed/needing", "need to do, need for", "I need to leave now.", "もう行かなきゃ。", "26", "日常", "need to do=〜する必要"],
+    ["〜を楽しむ", "感情・態度", "楽しむ", "enjoy", "楽しむ", "enjoyed/enjoyed/enjoying", "enjoy doing, enjoy oneself", "I enjoy cooking.", "料理が好きだ。", "100+", "日常", "enjoy + -ing（to不可）"],
+    ["〜を心配する", "感情・態度", "心配する", "worry", "心配する", "worried/worried/worrying", "worry about, don't worry", "Don't worry about it.", "気にしないで。", "100+", "日常", "Don't worry=大丈夫"],
+    ["〜を気にかける", "感情・態度", "気遣う", "care", "気にかける、世話する", "cared/cared/caring", "care about, care for, take care", "I really care about you.", "君のことを本当に大切に思う。", "100+", "日常", "care about=大切に思う"],
+    ["〜が気になる/嫌だ", "感情・態度", "気にする", "mind", "気にする、嫌がる", "minded/minded/minding", "mind doing, Do you mind if…", "Do you mind if I sit here?", "ここ座ってもいい？", "100+", "日常", "Would you mind=丁寧な依頼"],
+    ["〜の方が好きだ", "感情・態度", "選好する", "prefer", "〜の方を好む", "preferred/…/preferring", "prefer A to B, prefer to do", "I prefer tea to coffee.", "コーヒーより紅茶が好き。", "100+", "日常", "prefer A to B"],
+
+    # ── 使役・産出・作成 ────────────────────────────────────
+    ["〜を作る/〜させる", "使役・産出・作成", "作る・使役", "make", "作る、〜させる", "made/made/making", "make sure, make A do, make up", "You make me happy.", "君は私を幸せにする。", "6", "日常", "make A do=Aに〜させる"],
+    ["〜をする", "使役・産出・作成", "行う", "do", "する、行う", "did/done/doing", "do one's best, do with", "What do you do?", "お仕事は何を？", "3", "日常", "汎用動詞。助動詞にも"],
+    ["〜を生み出す", "使役・産出・作成", "創造する", "create", "創り出す", "created/created/creating", "create a file, create jobs", "We created a new logo.", "新しいロゴを作った。", "65", "ビジネス", "無から生み出す"],
+    ["〜を築く/建てる", "使役・産出・作成", "構築する", "build", "建てる、築く", "built/built/building", "build up, build on", "They're building a bridge.", "橋を建設中だ。", "86", "ビジネス", "build up=徐々に築く"],
+    ["〜を生産する", "使役・産出・作成", "生産する", "produce", "生産する、生み出す", "produced/…/producing", "produce goods, mass-produce", "This factory produces cars.", "この工場は車を作る。", "100+", "ビジネス", "工業的生産"],
+    ["〜を使う", "使役・産出・作成", "使用する", "use", "使う、利用する", "used/used/using", "use up, used to, be used to", "Can I use your pen?", "ペン借りていい？", "16", "日常", "used to=昔は〜した"],
+    ["働く/機能する", "使役・産出・作成", "働く・機能", "work", "働く、機能する、うまくいく", "worked/worked/working", "work out, work on, work for", "This plan won't work.", "この計画はうまくいかない。", "20", "日常", "work out=うまくいく/運動する"],
+    ["遊ぶ/演奏する", "使役・産出・作成", "遊ぶ・演じる", "play", "遊ぶ、演奏する、（競技を）する", "played/played/playing", "play a role, play games", "He plays the guitar.", "彼はギターを弾く。", "39", "日常", "play a role=役割を果たす"],
+    ["〜を書く", "使役・産出・作成", "書く", "write", "書く", "wrote/written/writing", "write down, write to", "Write your name here.", "ここに名前を書いて。", "48", "日常", "write down=書き留める"],
+    ["〜を読む", "使役・産出・作成", "読む", "read", "読む", "read/read/reading", "read about, read out", "I read the news today.", "今日ニュースを読んだ。", "67", "日常", "過去形readは発音[red]"],
+    ["〜を教える", "使役・産出・作成", "教える", "teach", "教える", "taught/taught/teaching", "teach A B, teach A to do", "She teaches English.", "彼女は英語を教えている。", "100+", "日常", "teach A B"],
+    ["〜を勉強する", "使役・産出・作成", "学ぶ", "study", "勉強する、研究する", "studied/studied/studying", "study for, study abroad", "I'm studying for a test.", "テスト勉強中だ。", "100+", "日常", "study for=〜に備えて勉強"],
+
+    # ── 存在・発生 ──────────────────────────────────────────
+    ["〜である/〜がいる", "存在・発生", "存在する", "be", "〜である、いる、ある", "was,were/been/being", "there is/are, be about to", "There is a problem.", "問題がある。", "1", "日常", "最頻出。be動詞"],
+    ["〜が起こる", "存在・発生", "起こる", "happen", "起こる、偶然〜する", "happened/…/happening", "happen to do, what happened", "What happened yesterday?", "昨日何があったの？", "47", "日常", "happen to do=たまたま〜する"],
+    ["生きる/住む", "存在・発生", "生存する", "live", "生きる、住む", "lived/lived/living", "live in, live on, live with", "I live near the station.", "駅の近くに住んでいる。", "43", "日常", "発音[lɪv]。形容詞liveは[laɪv]"],
+    ["死ぬ", "存在・発生", "消滅する", "die", "死ぬ", "died/died/dying", "die of/from, be dying to", "I'm dying to see it.", "それがすごく見たい。", "83", "日常", "be dying to=〜したくてたまらない"],
+    ["とどまる/滞在する", "存在・発生", "とどまる", "stay", "とどまる、滞在する", "stayed/stayed/staying", "stay at/in, stay up, stay home", "Let's stay home tonight.", "今夜は家にいよう。", "87", "日常", "stay up=夜更かしする"],
+    ["〜のままである/残る", "存在・発生", "残存する", "remain", "残る、〜のままだ", "remained/…/remaining", "remain silent, it remains to be seen", "Please remain seated.", "着席したままで。", "92", "書き言葉", "堅い。stayより形式的"],
+    ["〜を含む", "存在・発生", "包含する", "include", "含む", "included/included/including", "including, be included", "The price includes tax.", "価格は税込みです。", "55", "ビジネス", "including=〜を含めて"],
+
+    # ── 認知・学習 ──────────────────────────────────────────
+    ["〜を知っている", "認知・学習", "知識がある", "know", "知っている、わかる", "knew/known/knowing", "know about, you know, as far as I know", "I don't know for sure.", "確かなことはわからない。", "8", "日常", "you know=あのね（つなぎ）"],
+    ["〜を理解する", "認知・学習", "理解する", "understand", "理解する", "understood/…/understanding", "understand that…, make oneself understood", "I understand your point.", "言い分は理解できる。", "61", "日常", "get より丁寧・明確"],
+    ["〜を覚えている", "認知・学習", "記憶する", "remember", "覚えている、思い出す", "remembered/…/remembering", "remember to do, remember doing", "Remember to call her.", "彼女に電話するのを忘れずに。", "76", "日常", "to do=これから / doing=した事"],
+    ["〜を忘れる", "認知・学習", "忘却する", "forget", "忘れる", "forgot/forgotten/forgetting", "forget to do, forget about", "I forgot to reply.", "返信し忘れた。", "100+", "日常", "forget to do=し忘れる"],
+    ["〜を決める", "認知・学習", "決定する", "decide", "決める", "decided/decided/deciding", "decide to do, decide on", "I decided to quit.", "辞めることにした。", "99", "日常", "decide to do"],
+    ["〜を選ぶ", "認知・学習", "選択する", "choose", "選ぶ", "chose/chosen/choosing", "choose to do, choose between", "Choose whichever you like.", "好きな方を選んで。", "100+", "日常", "pickより慎重な選択"],
+    ["〜を学ぶ", "認知・学習", "学習する", "learn", "学ぶ、覚える", "learned/learned/learning", "learn about, learn to do", "I want to learn Spanish.", "スペイン語を学びたい。", "58", "日常", "study(過程)と違い習得を含意"],
+    ["〜を見つける/〜だとわかる", "認知・学習", "発見する", "find", "見つける、わかる", "found/found/finding", "find out, find A 形", "I find it useful.", "それは便利だと思う。", "17", "日常", "find out=（調べて）判明する"],
+
+    # ── 開始・継続・完了 ────────────────────────────────────
+    ["〜を始める", "開始・継続・完了", "開始する", "begin", "始める、始まる", "began/begun/beginning", "begin to do, begin with", "The meeting begins at 3.", "会議は3時に始まる。", "31", "ビジネス", "startより堅い"],
+    ["〜を始める", "開始・継続・完了", "開始する", "start", "始める、始動する", "started/started/starting", "start doing, start over, get started", "Let's get started.", "始めましょう。", "35", "日常", "start over=最初からやり直す"],
+    ["〜を終える", "開始・継続・完了", "完了する", "finish", "終える、終わる", "finished/…/finishing", "finish doing, finish up", "I finished my work.", "仕事を終えた。", "100+", "日常", "finish + -ing"],
+    ["〜してみる/試す", "開始・継続・完了", "試みる", "try", "試す、やってみる、努力する", "tried/tried/trying", "try to do, try doing, try on", "Try to relax.", "リラックスしてみて。", "23", "日常", "try to(努力)/try doing(試しに)"],
+    ["〜を続ける", "開始・継続・完了", "継続する", "continue", "続く、続ける", "continued/…/continuing", "continue to do, continue with", "Let's continue tomorrow.", "続きは明日にしよう。", "56", "ビジネス", "to do / -ing 両方可"],
+    ["〜し続ける/保つ", "開始・継続・完了", "維持する", "keep", "保つ、〜し続ける", "kept/kept/keeping", "keep doing, keep up, keep on", "Keep trying!", "頑張り続けて！", "29", "日常", "keep + -ing=し続ける"],
+    ["〜をやめる/止まる", "開始・継続・完了", "停止する", "stop", "止まる、やめる", "stopped/stopped/stopping", "stop doing, stop to do", "Stop worrying.", "心配するのはやめて。", "64", "日常", "stop doing(やめる)/stop to do(立ち止まって〜する)"],
+    ["〜が終わる", "開始・継続・完了", "終了する", "end", "終わる、終える", "ended/ended/ending", "end up, in the end", "The movie ends at 9.", "映画は9時に終わる。", "100+", "日常", "end up=結局〜になる"],
+]

@@ -1,0 +1,31 @@
+番号,カテゴリ,トリガー(日),英語フレーズ,空所型,候補,メモ
+1,初対面・自己紹介,お名前はなんですか？,What's your name?,none,,My name is … と返す。I'm … も可
+2,初対面・自己紹介,出身地はどこですか？,Where are you from?,none,,I'm from … で答える
+3,初対面・自己紹介,どこに住んでいますか？,Where do you live?,none,,I live in … と答える
+4,初対面・自己紹介,元気ですか？,How are you?,none,,"I'm good, thanks. と返すのが定番"
+5,初対面・自己紹介,あなたはどうですか？,How about you?,none,,質問を相手に返す万能句。And you? も可
+6,初対面・自己紹介,はじめまして,Nice to meet you.,none,,別れ際は Nice meeting you.
+7,初対面・自己紹介,何をしていますか？（仕事）,What do you do?,none,,職業を尋ねる定番。今の動作は What are you doing?
+12,初対面・自己紹介,趣味はなんですか？,What are your hobbies?,none,,砕けると What do you do for fun?
+25,初対面・自己紹介,あの方はどなたですか？,Who's that?,none,,人を指して。Who is he/she? も
+8,言語学習トーク,〇〇語を話しますか？,Do you speak 〇〇?,language,English、Japanese、Spanish、French、Chinese,言語名を入れる
+9,言語学習トーク,なぜ〇〇語を勉強していますか？,Why are you learning 〇〇?,language,English、Japanese、Spanish、Korean,理由は Because … で返す
+10,言語学習トーク,なぜなら〇〇だからです,Because 〇〇.,chunk,it's fun、I love the culture、of my job、I live here,理由を一言で
+11,言語学習トーク,どれくらい〇〇語を学んでいますか？,How long have you been learning 〇〇?,language,English、Japanese、Spanish,期間は for two years など
+13,会話を広げる・確認,〇〇したことはありますか？,Have you ever 〇〇?,chunk,been to Japan、tried sushi、seen this、been abroad,経験を尋ねる。動詞は過去分詞
+14,会話を広げる・確認,〇〇してもいいですか？,Can I 〇〇?,chunk,sit here、use this、take a photo、come in,許可を求める。丁寧は May I …?
+15,会話を広げる・確認,いつ〇〇しましたか？,When did you 〇〇?,chunk,arrive、come here、start、get here,過去の時を尋ねる。動詞は原形
+16,会話を広げる・確認,〇〇が好きですか？,Do you like 〇〇?,noun,coffee、music、sushi、sports,名詞や動名詞を入れる
+17,会話を広げる・確認,〇〇はどういう意味ですか？,What does 〇〇 mean?,thing,this、that word、this word,分からない語を聞く
+18,会話を広げる・確認,〇〇ができますか？,Can you 〇〇?,chunk,swim、cook、drive、help me,能力・依頼の両方に使える
+19,会話を広げる・確認,〇〇がありますか？,Do you have 〇〇?,noun,time、a pen、a menu、wifi,所有・在庫を尋ねる
+20,会話を広げる・確認,もう一度言ってください,Could you say that again?,none,,聞き返しの定番。Sorry? / Pardon? も
+24,会話を広げる・確認,どの〇〇ですか？,Which 〇〇?,noun,one、bus、way、train,選択肢を尋ねる
+21,買い物・レストラン,〇〇はいくらですか？,How much is 〇〇?,thing,this、the ticket、it、that one,値段を尋ねる
+27,買い物・レストラン,おすすめの料理はなんですか？,What do you recommend?,none,,店で。What's good here? も
+28,買い物・レストラン,これをください,Can I have this?,none,,指さして注文。I'll take this. も
+29,買い物・レストラン,お会計をお願いします,"Can I have the bill, please?",none,,米では the check。丁寧で万能
+26,移動・場所・時間,何時ですか？,What time is it?,none,,時刻を尋ねる。Do you have the time? も
+22,移動・場所・時間,〇〇に行きたいです,I want to go to 〇〇.,place,the station、the airport、Tokyo、the bathroom,丁寧は I'd like to go to …
+23,移動・場所・時間,〇〇まではどうやって行きますか？,How do I get to 〇〇?,place,the station、the museum、downtown、the airport,道順を尋ねる
+30,丁寧な依頼,〇〇していただけますか？,Could you 〇〇?,chunk,help me、say that again、repeat that、slow down,最も丁寧な依頼。Would you mind …ing? も

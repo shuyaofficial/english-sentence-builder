@@ -1,0 +1,63 @@
+﻿言いたいこと,意味グループ,サブグループ,見出し語,コア語義,活用・派生,コロケーション・句動詞,例文(EN),例文(JP),頻度ランク,レジスター,メモ
+私は/私を,代名詞,人称（一）,I / me,私は／私を,I(主)/me(目)/my/mine/myself,"you and I, it's me",It's me.,私だよ。,全体10,日常,主格I・目的格me
+あなたは/あなたを,代名詞,人称（二）,you,あなた（たち）,you/your/yours/yourself,"you know, thank you",You know what I mean.,わかるでしょ。,全体8,日常,単複同形
+彼は/彼を,代名詞,人称（三・男）,he / him,彼は／彼を,he/him/his/himself,"he said, tell him",He said he'd come.,彼は来ると言った。,全体15,日常,
+彼女は/彼女を,代名詞,人称（三・女）,she / her,彼女は／彼女を,she/her/hers/herself,"she is, ask her",She's my sister.,彼女は私の妹だ。,全体20,日常,
+それは/それを,代名詞,人称（三・物）,it,それは／それを,it/its/itself,"it is, that's it",It's raining.,雨が降っている。,全体10,日常,天気・時間の主語にも
+私たちは,代名詞,人称（一・複）,we / us,私たちは／を,we/us/our/ours/ourselves,"we should, let us",We should go now.,もう行くべきだ。,全体30,日常,
+彼らは/それらは,代名詞,人称（三・複）,they / them,彼らは、それらは,they/them/their/themselves,"they say, tell them",They live nearby.,彼らは近くに住む。,全体18,日常,単数扱い(性別不明)にも
+これ/こちら,代名詞,指示（近）,this,これ、この,these(複),"this is, like this",This is my friend.,こちらは友人です。,全体40,日常,紹介に使う
+あれ/それ,代名詞,指示（遠）,that,あれ、それ、あの,those(複),"that's right, like that",That's a good point.,それはいい指摘だ。,全体9,日常,関係詞・接続詞にも
+誰か/何か,代名詞,不定,someone / something,誰か／何か,anyone/anything/everyone,"someone else, something like",Someone is here.,誰かいる。,全体100+,日常,肯定文はsome/疑問否定はany
+〜の中に（空間・期間）,前置詞,位置・時,in,〜の中に、〜に（月・年）,—,"in the morning, in Tokyo, in time",I'll be there in ten minutes.,10分後に着く。,全体6,日常,in+月/年/都市。in 時間=〜後に
+〜の上に/〜に（日付）,前置詞,接触・曜日,on,〜の上に、〜に（曜日）,—,"on Monday, on time, on the table",See you on Friday.,金曜に会おう。,全体12,日常,on+曜日/日付
+〜に（地点・時刻）,前置詞,点,at,〜に（場所・時刻）,—,"at 3 o'clock, at home, at work",Let's meet at noon.,正午に会おう。,全体16,日常,at+時刻/地点
+〜へ/〜に（方向・相手）,前置詞,方向,to,〜へ、〜に,—,"go to, give to, talk to",I'm going to the office.,オフィスへ行く。,全体5,日常,不定詞to doにも
+〜のために/〜にとって,前置詞,目的・対象,for,〜のために、〜の間,—,"for you, for a while, thanks for",This is for you.,これ君にあげる。,全体11,日常,期間・目的・交換
+〜と一緒に/〜で（道具）,前置詞,同伴・手段,with,〜と、〜を使って,—,"with me, agree with, help with",Come with me.,一緒に来て。,全体17,日常,手段・所有(with a smile)にも
+〜の（所属・部分）,前置詞,所属,of,〜の,—,"a lot of, kind of, one of",He's a friend of mine.,彼は私の友人だ。,全体2,日常,最頻出前置詞。所有・部分
+〜から（起点）,前置詞,起点,from,〜から,—,"from A to B, far from, different from",I'm from Japan.,日本出身です。,全体22,日常,出発点・出身
+〜によって/〜のそばに/〜までに,前置詞,手段・期限,by,〜によって、〜までに,—,"by the way, by car, by 5 pm",Send it by Friday.,金曜までに送って。,全体24,ビジネス,by+期限=〜までに（完了）
+〜について,前置詞,主題,about,〜について、およそ,—,"talk about, think about, how about",What's it about?,それ何の話？,全体35,日常,How about…?=〜はどう？
+〜の上に/〜を越えて,前置詞,上方・超過,over,〜の上に、〜を越えて,—,"all over, over there, think over",Let's talk it over.,じっくり話し合おう。,全体60,日常,over=期間・超過にも
+〜の間に（2つ）,前置詞,中間,between,〜の間に（2者）,—,between A and B,It's between us.,ここだけの話。,全体80,日常,3つ以上はamong
+〜を通って/〜を通じて,前置詞,通過,through,〜を通り抜けて、〜を通じて,—,"go through, through the week",We got through it.,乗り越えたね。,全体90,日常,go through=経験する/通る
+〜のあとで,前置詞,時（後）,after,〜のあとで,—,"after that, look after, day after day",Let's talk after lunch.,昼食後に話そう。,全体55,日常,接続詞にも
+〜の前に,前置詞,時（前）,before,〜の前に,—,"before that, the day before",Call me before 9.,9時前に電話して。,全体50,日常,接続詞にも
+〜なしで,前置詞,欠如,without,〜なしで,—,"without you, do without, without doing",I can't do it without help.,助けなしではできない。,全体85,日常,without doing=〜せずに
+そして/〜と,接続詞,並列,and,そして、〜と,—,"and so on, both A and B",You and me.,君と僕。,全体3,日常,最頻出接続詞
+しかし/でも,接続詞,逆接,but,しかし、でも,—,"not A but B, but still",It's cheap but good.,安いけどいい。,全体21,日常,howeverより口語
+または/〜か,接続詞,選択,or,または、さもないと,—,"either A or B, or else",Tea or coffee?,紅茶それともコーヒー？,全体28,日常,or else=さもないと
+だから/それで,接続詞,帰結（口語）,so,だから、それで,—,"so that, and so","It rained, so we stayed in.",雨だったから家にいた。,全体25,日常,口語の帰結。therefore(堅)
+〜だから（理由）,接続詞,理由,because,〜なので、〜だから,—,"because of, just because",I'm late because of traffic.,渋滞で遅れた。,全体45,日常,because of+名詞
+もし〜なら,接続詞,条件,if,もし〜なら、〜かどうか,—,"if you like, as if, even if",Call me if you need help.,困ったら電話して。,全体33,日常,I wonder if…=〜かどうか
+〜するとき,接続詞,時,when,〜するとき,—,"when I was, when it comes to",Call me when you arrive.,着いたら電話して。,全体38,日常,時・条件を表す
+〜する間/〜する一方で,接続詞,同時・対比,while,〜する間、〜する一方で,—,"while doing, for a while",Read while you wait.,待つ間に読んで。,全体70,日常,対比(一方で)にも
+〜だけれども,接続詞,譲歩,although,〜だけれども,—,"although…, even although(×)","Although it's hard, I'll try.",難しいけどやってみる。,全体100+,書き言葉,thoughより堅い
+〜するまで,接続詞,継続の終点,until,〜するまで,—,"until now, wait until",Wait until I call.,電話するまで待って。,全体75,日常,till も同義
+その（特定）,限定詞・冠詞,定冠詞,the,その、（特定の）,—,"the best, the same, in the end",Close the door.,そのドアを閉めて。,全体1,日常,特定・既出のもの
+ある（1つの）,限定詞・冠詞,不定冠詞,a / an,1つの、ある,a(子音前)/an(母音前),"a lot of, a few, an hour",I need a break.,休憩が必要だ。,全体4,日常,母音音の前はan
+いくつかの/いくらかの,限定詞・冠詞,不定量,some,いくつかの、いくらかの,—,"some of, some day, for some time",Can I have some water?,水をもらえる？,全体42,日常,肯定文・勧誘の疑問文
+どれでも/少しも,限定詞・冠詞,任意・否定,any,どれでも、（否定で）少しも,—,"any time, not any, in any case",Do you have any questions?,何か質問ある？,全体44,日常,疑問・否定文で
+すべての/どの〜も,限定詞・冠詞,全体,every,すべての、どの〜も,—,"every day, everyone, every time",I run every morning.,毎朝走る。,全体55,日常,単数名詞につく
+まったく〜ない,限定詞・冠詞,全否定,no,1つも〜ない,—,"no problem, no one, no way",There's no time.,時間がない。,全体40,日常,名詞を直接否定
+すべての,限定詞・冠詞,全部,all,すべての,—,"all day, all of, above all",I read all the books.,全部の本を読んだ。,全体48,日常,above all=とりわけ
+両方の,限定詞・冠詞,両方,both,両方の,—,"both of, both A and B",Both are fine.,どちらでもいい。,全体90,日常,both A and B
+〜できる/〜してもいい,助動詞・法助動詞,能力・許可,can,〜できる、〜してもよい,can/could(過去),"can you, can't, can I",Can you help me?,手伝ってくれる？,全体30,日常,口語の依頼・許可に頻出
+〜できた/〜してもらえますか,助動詞・法助動詞,丁寧・過去能力,could,〜できた、〜してもらえますか,canの過去/丁寧形,"could you, could I",Could you say that again?,もう一度言ってもらえますか？,全体50,日常,canより丁寧な依頼
+〜するつもり/〜だろう,助動詞・法助動詞,未来・意志,will,〜するつもり、〜だろう,will/would/'ll/won't,"I'll, will you",I'll call you later.,あとで電話するね。,全体20,日常,'ll=短縮。won't=しない
+〜してもらえますか/〜だろうに,助動詞・法助動詞,丁寧・仮定,would,〜してもらえますか、〜だろうに,willの過去/丁寧形,"would you, I'd like, would rather",Would you like some tea?,紅茶はいかがですか？,全体55,日常,would like=丁寧なwant
+〜すべき/〜した方がいい,助動詞・法助動詞,助言・義務,should,〜すべき、〜した方がいい,should/shouldn't,"should I, you should",You should see a doctor.,医者に行った方がいい。,全体60,日常,助言に最頻出
+〜かもしれない/〜してもよい,助動詞・法助動詞,許可・可能性,may,〜かもしれない、〜してよい,may/might,"may I, may be",May I come in?,入ってもいいですか？,全体80,ビジネス,May I…?=丁寧な許可
+〜かもしれない（低い）,助動詞・法助動詞,可能性（低）,might,〜かもしれない,mayの過去/弱形,"might be, might as well",It might rain later.,あとで雨かも。,全体85,日常,mayより不確か
+〜しなければ/〜に違いない,助動詞・法助動詞,義務・確信,must,〜しなければ、〜に違いない,must/mustn't,"must be, you must",You must be tired.,疲れているに違いない。,全体70,日常,強い義務・確信
+〜しなければならない,助動詞・法助動詞,義務（外的）,have to,〜しなければならない,have/has/had to,"have to do, don't have to",I have to go now.,もう行かなきゃ。,全体65,日常,don't have to=しなくてよい
+〜する予定だ,助動詞・法助動詞,予定・意図,be going to,〜する予定だ、〜しそうだ,am/is/are going to,"be going to do, gonna(口)",I'm going to study tonight.,今夜勉強するつもり。,全体75,日常,計画・予兆。口語gonna
+何が/何を,疑問詞,物・事,what,何、どんな,—,"what time, what kind of, what about",What do you want?,何が欲しいの？,全体30,日常,What about…?=〜はどう？
+誰が/誰を,疑問詞,人,who,誰,who/whom/whose,"who is, who knows",Who's there?,誰かいる？,全体60,日常,
+どこで/どこに,疑問詞,場所,where,どこ,—,"where are you, where to",Where are you now?,今どこ？,全体65,日常,
+いつ,疑問詞,時,when,いつ,—,"when is, since when",When can we meet?,いつ会える？,全体55,日常,
+なぜ/どうして,疑問詞,理由,why,なぜ,—,"why not, that's why",Why not?,いいね（なぜだめ？）,全体70,日常,Why not?=そうしよう
+どうやって/どのくらい,疑問詞,方法・程度,how,どうやって、どのくらい,—,"how much, how many, how about",How do I get there?,そこへどう行くの？,全体40,日常,how+形容詞=程度
+どちら/どれ,疑問詞,選択,which,どちら、どの,—,"which one, which of",Which do you prefer?,どっちが好き？,全体90,日常,限られた選択肢から
+誰の,疑問詞,所有,whose,誰の,—,whose is this,Whose bag is this?,これ誰のかばん？,全体100+,日常,所有を尋ねる
