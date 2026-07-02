@@ -9,6 +9,8 @@
   // ── 純ロジック（DOM非依存）─────────────────────────────
   var BOX_DAYS = [0, 1, 3, 7, 14]; // 箱ごとの復習間隔（日）
   var LS_KEY = "srb.phrases.v1";
+  var MINE_KEY = "srb.mysentences.v1";
+  var MINE_MAX = 200; // 文集の保存上限（超過分は末尾＝古い方から捨てる）
 
   function pad2(n) { return (n < 10 ? "0" : "") + n; }
   function toDateStr(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
@@ -57,6 +59,20 @@
   }
   function fillSentence(en, choice) { return en.replace("〇〇", choice); }
 
+  // ── 文集（自分の文）の純ロジック ──────────────────────
+  // enをキーに重複除去し、先頭（新しい順）に追加。上限MINE_MAXで末尾から切り捨て。
+  // 元配列は変更せず新しい配列を返す。
+  function addSentence(list, en, jp, at) {
+    var arr = (list || []).filter(function (s) { return s && s.en !== en; });
+    return [{ en: en, jp: jp, at: at }].concat(arr).slice(0, MINE_MAX);
+  }
+  function removeSentence(list, en) {
+    return (list || []).filter(function (s) { return s && s.en !== en; });
+  }
+  function hasSentence(list, en) {
+    return (list || []).some(function (s) { return s && s.en === en; });
+  }
+
   // ── 進捗の保存（localStorage・使えない環境では黙って諦める）──
   // 壊れたitem（boxが非数値・dueが日付でない等）は捨てる。
   // 例: due:"NaN-NaN-NaN" は文字列比較で永遠に期限が来ず、そのカードが二度と出題されなくなる
@@ -81,10 +97,28 @@
     try { localStorage.setItem(LS_KEY, JSON.stringify(p)); } catch (e) { }
   }
 
+  // 文集の読み書き。items が配列でない・en(string)がない要素は捨てる。
+  function loadMine() {
+    try {
+      var raw = localStorage.getItem(MINE_KEY);
+      if (!raw) return [];
+      var d = JSON.parse(raw);
+      if (!d || !Array.isArray(d.items)) return [];
+      return d.items.filter(function (s) { return s && typeof s.en === "string"; })
+        .map(function (s) {
+          return { en: s.en, jp: typeof s.jp === "string" ? s.jp : "", at: typeof s.at === "string" ? s.at : "" };
+        }).slice(0, MINE_MAX);
+    } catch (e) { return []; }
+  }
+  function saveMine(list) {
+    try { localStorage.setItem(MINE_KEY, JSON.stringify({ version: 1, items: list })); } catch (e) { }
+  }
+
   // ── UI状態 ──────────────────────────────────────────────
   var D = window.WORD_DATA;
   var root = null;
   var prog = loadProgress();
+  var mine = loadMine();
   var P = {
     tab: "list", cat: null,
     deck: [], idx: 0, flipped: false, done: 0, again: 0,
@@ -118,12 +152,13 @@
     var tabs = [
       ["list", "一覧", "30の型を眺める"],
       ["cards", "暗記カード", "日本語 → 英語"],
-      ["fill", "穴埋め", "〇〇を入れ替える"]
+      ["fill", "穴埋め", "〇〇を入れ替える"],
+      ["mine", "文集", "自分の文"]
     ];
     var nav = '<div class="subtabs" role="tablist" aria-label="学習方法">' + tabs.map(function (t) {
       return '<button class="subtab" role="tab" data-ptab="' + t[0] + '" aria-selected="' + (P.tab === t[0]) + '"><b>' + t[1] + '</b><small>' + t[2] + '</small></button>';
     }).join("") + '</div>';
-    var body = P.tab === "cards" ? cardsBody() : P.tab === "fill" ? fillBody() : listBody();
+    var body = P.tab === "cards" ? cardsBody() : P.tab === "fill" ? fillBody() : P.tab === "mine" ? mineBody() : listBody();
     root.innerHTML = nav + '<div class="phrases-body">' + body + '</div>';
   }
 
@@ -258,11 +293,16 @@
       var fullHtml = esc(parts[0]) +
         '<span class="blank-slot filled">' + esc(P.fillPick) + '</span>' +
         esc(parts.slice(1).join("〇〇"));
+      var saved = hasSentence(mine, full);
+      var saveBtn = saved
+        ? '<button class="act" disabled>保存済み ✓</button>'
+        : '<button class="act" data-savemine="' + esc(full) + '">★ 文集に保存</button>';
       stage = '<div class="fill-stage done-fill">' +
         '<div class="fs-label">できた文</div>' +
         '<div class="fs-en">' + fullHtml + '</div>' +
         '<div class="fs-jp">' + esc(p.jp) + '</div>' +
         '<div class="fs-acts"><button class="act primary" data-speak="' + esc(full) + '">🔊 発音する</button>' +
+        saveBtn +
         '<button class="act" data-fillreset="1">↺ 別の語で</button></div></div>';
     } else {
       stage = '<div class="fill-stage">' +
@@ -288,6 +328,44 @@
     P.fillIdx = (P.fillIdx + d + n) % n;
     P.fillPick = null;
     render();
+  }
+
+  // 文集：穴埋めで作った文を溜めて見返す
+  function mineBody() {
+    if (!mine.length) {
+      return '<div class="mine-empty">穴埋めで作った文がここに溜まります。' +
+        '<div class="fs-acts" style="margin-top:.8rem"><button class="act primary" data-ptab="fill">穴埋めへ</button></div></div>';
+    }
+    var head = '<div class="mine-head">' +
+      '<span class="pp-label"><b>' + mine.length + '</b> 文</span>' +
+      '<button class="act" data-copymine="1">📋 すべてコピー</button></div>';
+    var list = mine.map(function (s) {
+      return '<div class="mine-item">' +
+        '<div class="mine-body">' +
+        '<div class="mine-en">' + esc(s.en) + '</div>' +
+        '<div class="mine-jp">' + esc(s.jp) + '</div></div>' +
+        '<div class="mine-acts">' +
+        '<button class="act" data-speak="' + esc(s.en) + '" aria-label="読み上げ">🔊</button>' +
+        '<button class="act" data-delmine="' + esc(s.en) + '">✕ 削除</button>' +
+        '</div></div>';
+    }).join("");
+    return head + '<div class="mine-list">' + list + '</div>';
+  }
+
+  // 文集の全文をコピー。clipboard不可/失敗時は prompt にフォールバック
+  function copyMine() {
+    var text = mine.map(function (s) { return s.en; }).join("\n");
+    function fallback() { try { window.prompt("コピーしてください", text); } catch (e) { } }
+    function flash() {
+      var btn = root && root.querySelector("[data-copymine]");
+      if (btn) btn.textContent = "コピーしました ✓";
+      setTimeout(render, 2000);
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(flash, fallback);
+      } else { fallback(); }
+    } catch (e) { fallback(); }
   }
 
   // ── events ──────────────────────────────────────────────
@@ -321,6 +399,24 @@
       if (p) window.Speech.speak(fillSentence(p.en, P.fillPick));
       return;
     }
+    t = e.target.closest("[data-savemine]");
+    if (t) {
+      var en = t.dataset.savemine;
+      var cur = P.fillList[P.fillIdx];
+      mine = addSentence(mine, en, cur ? cur.jp : "", today());
+      saveMine(mine);
+      render();
+      return;
+    }
+    t = e.target.closest("[data-delmine]");
+    if (t) {
+      mine = removeSentence(mine, t.dataset.delmine);
+      saveMine(mine);
+      render();
+      return;
+    }
+    t = e.target.closest("[data-copymine]");
+    if (t) { copyMine(); return; }
   }
   // app.js から委譲される。処理したら true を返す（呼び元が preventDefault する）
   function onKey(e) {
@@ -346,7 +442,9 @@
     logic: {
       BOX_DAYS: BOX_DAYS, gradeItem: gradeItem, isDue: isDue, buildDeck: buildDeck,
       boxDist: boxDist, masteredCount: masteredCount, fillSentence: fillSentence,
-      addDays: addDays
+      addDays: addDays,
+      MINE_MAX: MINE_MAX, addSentence: addSentence, removeSentence: removeSentence,
+      hasSentence: hasSentence
     }
   };
 })();

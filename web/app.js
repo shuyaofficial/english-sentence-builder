@@ -12,6 +12,7 @@
     SV: "そのままで文になる", SVC: "→ 補語（どんな/なに）", SVO: "→ 目的語（なにを）",
     SVOO: "→ 人 ＋ 物", SVOC: "→ 目的語 ＋ 補語"
   };
+  var PATTERN_SHORT = { SV: "自動詞", SVC: "〜になる", SVO: "〜を", SVOO: "人に物を", SVOC: "〜を…に" };
   var JP_PRIORITY = { subject: 0, extra: 2, objectPerson: 3, object: 4, objectThing: 4, complement: 4, verb: 6 };
 
   // ── state ───────────────────────────────────────────────
@@ -19,20 +20,20 @@
   function freshState(mode) {
     return {
       mode: mode, subject: null, verb: null, pattern: null,
-      tense: "present", modal: "none", negative: false,
+      tense: "present", modal: "none", negative: false, aspect: "simple",
       slots: [], extras: [], activeSlot: "subject",
       activeGroup: null, search: "", highlight: 0,
       subjectSource: "pron", compSource: "adj",
       func: null, funcPick: null,
-      quizTarget: null, quizChecked: false, quizPass: false,
+      quizTarget: null, quizChecked: false, quizPass: false, quizSource: "verbs",
       jpOrder: false, justAddedKey: null
     };
   }
   function resetClause() {
-    var m = S.mode, f = S.func, fp = S.funcPick, qt = S.quizTarget;
+    var m = S.mode, f = S.func, fp = S.funcPick, qt = S.quizTarget, qs = S.quizSource;
     S = freshState(m);
     if (m === "function") { S.func = f; S.funcPick = fp; }
-    if (m === "quiz") S.quizTarget = qt;
+    if (m === "quiz") { S.quizTarget = qt; S.quizSource = qs; }
   }
 
   // ── helpers ─────────────────────────────────────────────
@@ -58,7 +59,7 @@
     if (S.verb) {
       tiles.push({
         role: "verb", jp: S.verb.jp,
-        en: G.verbSurface(S.verb, { person: S.subject ? S.subject.person : "1sg", tense: S.tense, modal: S.modal, negative: S.negative })
+        en: G.verbSurface(S.verb, { person: S.subject ? S.subject.person : "1sg", tense: S.tense, modal: S.modal, negative: S.negative, aspect: S.aspect })
       });
     }
     S.slots.forEach(function (sl) { tiles.push(sl.tile); });
@@ -235,10 +236,26 @@
   function renderControls() {
     var tenseDisabled = S.modal !== "none";
     var g = "";
+    // 文型スイッチ（make: SVO 〜を作る / SVOC 〜を…にする 等の分岐がある動詞のみ）
+    if (S.verb && S.verb.patternsAllowed && S.verb.patternsAllowed.length > 1) {
+      g += '<span class="glabel">文型</span><div class="grp">';
+      S.verb.patternsAllowed.forEach(function (p) {
+        g += '<button class="toggle' + (S.pattern === p ? " active" : "") + '" data-ctl="pattern" data-val="' + p +
+          '" title="' + esc(G.PATTERN_JP[p] || "") + '">' + p + '<small>' + (PATTERN_SHORT[p] || "") + '</small></button>';
+      });
+      g += '</div>';
+    }
     g += '<span class="glabel">時制</span><div class="grp">';
     g += ctlBtn("tense", "present", "現在", S.tense === "present" && !tenseDisabled, tenseDisabled);
     g += ctlBtn("tense", "past", "過去", S.tense === "past" && !tenseDisabled, tenseDisabled);
     g += '</div>';
+    // 進行形（be動詞自体は対象外）
+    if (S.verb && S.verb.en !== "be") {
+      g += '<span class="glabel">進行</span><div class="grp">';
+      g += ctlBtn("aspect", "simple", "ふつう", S.aspect === "simple", false);
+      g += ctlBtn("aspect", "progressive", "〜している", S.aspect === "progressive", false);
+      g += '</div>';
+    }
     g += '<span class="glabel">助動詞</span><div class="grp">';
     [["none", "なし"], ["can", "can"], ["could", "could"], ["will", "will"], ["would", "would"]].forEach(function (m) {
       g += ctlBtn("modal", m[0], m[1], S.modal === m[0], false);
@@ -262,7 +279,10 @@
       var arrow = i < steps.length - 1 ? '<span class="arrow">›</span>' : "";
       return '<span class="' + cls + '"><b>' + lab + '</b></span>' + arrow;
     }).join("");
-    $("stepper").innerHTML = html;
+    var patBadge = S.verb && S.pattern
+      ? '<span class="step pattern-badge" title="' + esc(G.PATTERN_JP[S.pattern] || "") + '"><b>' + esc(S.pattern) + '</b></span><span class="arrow">›</span>'
+      : "";
+    $("stepper").innerHTML = patBadge + html;
   }
   function isDone(type, i, steps) {
     if (type === "subject") return !!S.subject;
@@ -342,7 +362,7 @@
   }
 
   function renderHints() {
-    var ctx = { subject: S.subject, verb: S.verb, pattern: S.pattern, tense: S.tense, modal: S.modal, negative: S.negative, coreNouns: coreNouns() };
+    var ctx = { subject: S.subject, verb: S.verb, pattern: S.pattern, tense: S.tense, modal: S.modal, negative: S.negative, aspect: S.aspect, coreNouns: coreNouns() };
     var hints = G.grammarHints(ctx);
     $("hints").innerHTML = hints.map(function (h) {
       return '<div class="hint' + (h.level === "warn" ? " warn" : "") + '"><b>' + esc(h.b) + '</b>　' + esc(h.msg) + '</div>';
@@ -351,26 +371,43 @@
 
   // ── quiz ───────────────────────────────────────────────
   function newQuiz() {
-    var pool = D.verbs.filter(function (v) { return v.ex_en && v.ex_en.split(" ").length >= 3 && v.ex_en.split(" ").length <= 6; });
-    var pick = pool[Math.floor(Math.random() * pool.length)];
-    S.quizTarget = { jp: pick.ex_jp, en: pick.ex_en.replace(/[.?!]$/, "") };
+    var t = window.Quiz.next(S.quizSource); // 苦手・未出題を優先する重み付き出題
+    S.quizTarget = t ? { jp: t.jp, en: t.en, key: t.key } : null;
     S.quizChecked = false; S.quizPass = false; resetClause();
     render();
   }
   function renderQuizPrompt() {
     var t = S.quizTarget || {};
+    var st = window.Quiz.stats(S.quizSource);
+    var chips = '<div class="chips q-src">' + window.Quiz.SOURCES.map(function (s) {
+      return '<button class="chip' + (S.quizSource === s[0] ? " active" : "") + '" data-qsrc="' + s[0] + '">' + s[1] + '</button>';
+    }).join("") + '</div>';
     var res = "";
-    if (S.quizChecked) {
+    if (S.quizChecked && t.en) {
       res = '<div class="quiz-result ' + (S.quizPass ? "ok" : "ng") + '">' + (S.quizPass ? "✓ 正解！" : "△ 自己採点：下の模範解答と比べてみて") +
-        '<div class="model">' + esc(S.quizTarget.en) + '. <button class="act" data-act="quizspeak">🔊</button></div></div>';
+        '<div class="model">' + esc(t.en) + '. <button class="act" data-act="quizspeak">🔊</button></div></div>';
     }
-    $("quiz-prompt").innerHTML = '<div class="q-label">この日本語を英語で組み立てて</div><div class="q-jp">' + esc(t.jp || "") + '</div>' + res;
+    $("quiz-prompt").innerHTML =
+      '<div class="q-label">この日本語を英語で組み立てて' +
+      '<span class="q-stat">挑戦 ' + st.answered + '/' + st.total + '・得意 ' + st.correct + '</span></div>' +
+      chips +
+      '<div class="q-jp">' + esc(t.jp || "") + '</div>' + res;
   }
   function checkQuiz() {
+    if (!S.quizTarget) return;
     var mine = G.normalize(clauseString());
     S.quizPass = mine === G.normalize(S.quizTarget.en);
-    S.quizChecked = true; render();
+    var first = !S.quizChecked; // 同じ問題の再採点は履歴に数えない
+    S.quizChecked = true;
+    if (first && S.quizTarget.key) window.Quiz.record(S.quizTarget.key, S.quizPass);
+    render();
     if (!S.quizPass) speak(S.quizTarget.en);
+  }
+  function onQuizPrompt(e) {
+    var src = e.target.closest("[data-qsrc]");
+    if (src) { S.quizSource = src.dataset.qsrc; newQuiz(); return; }
+    var b = e.target.closest('[data-act="quizspeak"]');
+    if (b && S.quizTarget) speak(S.quizTarget.en);
   }
 
   // ── JP↔EN 並べ替えアニメ（FLIP）─────────────────────────
@@ -398,6 +435,14 @@
     if (c === "tense") S.tense = b.dataset.val;
     else if (c === "modal") S.modal = b.dataset.val;
     else if (c === "negative") S.negative = !S.negative;
+    else if (c === "aspect") S.aspect = b.dataset.val;
+    else if (c === "pattern") {
+      if (S.pattern !== b.dataset.val) { // 文型が変わると必要なスロットが変わるのでコアを組み直す
+        S.pattern = b.dataset.val;
+        S.slots = []; S.activeGroup = null; S.search = ""; S.highlight = 0;
+        S.activeSlot = computeActiveSlot();
+      }
+    }
     render();
   }
   function onPanel(e) {
@@ -443,7 +488,12 @@
     $("panel").addEventListener("click", onPanel);
     $("panel").addEventListener("input", onPanelInput);
     $("tray-actions").addEventListener("click", onTrayActions);
+    $("quiz-prompt").addEventListener("click", onQuizPrompt);
     document.addEventListener("keydown", onKey);
+    // PWA: http(s)配信時のみService Worker登録（file://では不可）
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      navigator.serviceWorker.register("sw.js").catch(function () { });
+    }
     render();
   }
   init();

@@ -472,7 +472,6 @@ window.WORD_DATA = {
    },
    "pattern": "SVO",
    "patternsAllowed": [
-    "SVO",
     "SVO"
    ],
    "colloc": "speak English, speak to, speak up",
@@ -1346,8 +1345,7 @@ window.WORD_DATA = {
    "pattern": "SVO",
    "patternsAllowed": [
     "SVO",
-    "SVC",
-    "SVO"
+    "SVC"
    ],
    "colloc": "turn on/off, turn out, turn into",
    "ex_en": "Turn left at the corner.",

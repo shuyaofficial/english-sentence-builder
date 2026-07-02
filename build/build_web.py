@@ -126,10 +126,14 @@ def build():
     for r in vrows:
         say_jp, group, sub, en, gloss, infl, colloc, ex_en, ex_jp, freq, reg, note = r
         pattern = PATTERN_PRIMARY.get(en, "SVO")
+        patterns_allowed = [pattern]
+        for p in PATTERN_ALLOWED.get(en, []):
+            if p not in patterns_allowed:
+                patterns_allowed.append(p)
         verbs.append({
             "en": en, "jp": say_jp, "group": group, "sub": sub, "gloss": gloss,
             "forms": parse_forms(en, infl), "pattern": pattern,
-            "patternsAllowed": [pattern] + PATTERN_ALLOWED.get(en, []),
+            "patternsAllowed": patterns_allowed,
             "colloc": colloc, "ex_en": ex_en, "ex_jp": ex_jp,
             "freq": freq, "reg": reg, "note": note,
         })
@@ -216,6 +220,9 @@ def build():
         assert v["pattern"] in ("SV", "SVC", "SVO", "SVOO", "SVOC"), v
         assert v["forms"]["thirdsg"], v
         assert v["forms"]["ing"], v
+        pa = v["patternsAllowed"]
+        assert len(pa) == len(set(pa)), f"patternsAllowed に重複: {v}"
+        assert all(p in ("SV", "SVC", "SVO", "SVOO", "SVOC") for p in pa), f"未知の文型: {v}"
     assert len(phrases) == 30, f"phrases={len(phrases)}"
     assert len({p["id"] for p in phrases}) == 30, "必須フレーズ: 番号が重複"
     for p in phrases:

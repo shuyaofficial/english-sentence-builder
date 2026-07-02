@@ -11,7 +11,17 @@
     should:["should", "shouldn't"]
   };
 
-  // 動詞の表層形を返す（主語人称・時制・法助動詞・否定を反映）
+  // be の活用形（否定含む）。be動詞本体と進行形の助動詞の両方で使う
+  function beForm(person, tense, negative) {
+    if (tense === "past") {
+      var wb = (person === "1sg" || person === "3sg") ? "was" : "were";
+      return negative ? wb + " not" : wb;
+    }
+    var be = person === "1sg" ? "am" : (person === "3sg" ? "is" : "are");
+    return negative ? be + " not" : be;
+  }
+
+  // 動詞の表層形を返す（主語人称・時制・法助動詞・否定・進行(aspect)を反映）
   function verbSurface(verb, opt) {
     opt = opt || {};
     var person = opt.person || "1sg";
@@ -20,16 +30,19 @@
     var negative = !!opt.negative;
     var f = verb.forms;
     var is3sg = person === "3sg";
+    // be自体の進行形（is being）は学習対象外として通常形にフォールバック
+    var progressive = opt.aspect === "progressive" && verb.en !== "be";
 
     // be 動詞は特別
     if (verb.en === "be") {
       if (modal !== "none") return modalWord(modal, negative) + " be";
-      if (tense === "past") {
-        var wb = (person === "1sg" || person === "3sg") ? "was" : "were";
-        return negative ? wb + " not" : wb;
-      }
-      var be = person === "1sg" ? "am" : (is3sg ? "is" : "are");
-      return negative ? be + " not" : be;
+      return beForm(person, tense, negative);
+    }
+
+    // 進行形: be + 〜ing（否定・時制は be 側が担う）
+    if (progressive) {
+      if (modal !== "none") return modalWord(modal, negative) + " be " + f.ing;
+      return beForm(person, tense, negative) + " " + f.ing;
     }
 
     if (modal !== "none") {
@@ -101,7 +114,20 @@
       }
     }
     if (verb) {
-      hints.push({ level: "info", b: "文型", msg: (ctx.pattern || verb.pattern) + "：" + (PATTERN_JP[ctx.pattern || verb.pattern] || "") });
+      var pat = ctx.pattern || verb.pattern;
+      hints.push({ level: "info", b: "文型", msg: pat + "：" + (PATTERN_JP[pat] || "") });
+      if (pat === "SVOO") {
+        hints.push({ level: "info", b: "SVOOの語順", msg: "人 → 物 の順（I gave her a book.）。物を先に言うなら to/for が要る（give a book to her）" });
+      }
+      if (pat === "SVOC") {
+        hints.push({ level: "info", b: "SVOC", msg: "目的語のあとに補語＝『〜を…の状態にする』（You make me happy. / I find it useful.）" });
+      }
+      if (verb.patternsAllowed && verb.patternsAllowed.length > 1) {
+        hints.push({ level: "info", b: "文型スイッチ", msg: "この動詞は複数の文型で使える（" + verb.patternsAllowed.join(" / ") + "）→ 上の『文型』ボタンで意味が変わる" });
+      }
+      if (ctx.aspect === "progressive" && verb.en !== "be") {
+        hints.push({ level: "info", b: "進行形", msg: "be + 〜ing＝今まさに・一時的な動作。like / know など状態動詞は普通進行形にしない" });
+      }
     }
     // 冠詞リマインダー（数えられる単数名詞をコアに置いたとき）
     (ctx.coreNouns || []).forEach(function (n) {
