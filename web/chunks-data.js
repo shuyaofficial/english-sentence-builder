@@ -80,19 +80,15 @@
     s = String(s);
     return s.length > n ? s.slice(0, n) : s;
   }
+  function normChunk(raw) {
+    if (!raw || typeof raw.en !== "string" || !raw.en || typeof raw.jp !== "string" || !raw.jp) return null;
+    return { en: capStr(raw.en, CAP_CHUNK), jp: capStr(raw.jp, CAP_CHUNK), note: typeof raw.note === "string" ? capStr(raw.note, CAP_NOTE) : "" };
+  }
   function normCandidate(c, i) {
     if (!c || typeof c.en !== "string" || !c.en) return null;
     if (!Array.isArray(c.chunks) || c.chunks.length < 1 || c.chunks.length > MAX_CHUNKS) return null;
-    var chunks = [];
-    for (var j = 0; j < c.chunks.length; j++) {
-      var raw = c.chunks[j];
-      if (!raw || typeof raw.en !== "string" || !raw.en || typeof raw.jp !== "string" || !raw.jp) return null;
-      chunks.push({
-        en: capStr(raw.en, CAP_CHUNK),
-        jp: capStr(raw.jp, CAP_CHUNK),
-        note: typeof raw.note === "string" ? capStr(raw.note, CAP_NOTE) : ""
-      });
-    }
+    var chunks = c.chunks.map(normChunk);
+    if (chunks.indexOf(null) !== -1) return null;
     var label = c.label === "plain" || c.label === "natural" ? c.label : "案" + (i + 1);
     var nuance = typeof c.nuance === "string" ? capStr(c.nuance, CAP_NUANCE) : "";
     return { label: label, nuance: nuance, en: capStr(c.en, CAP_EN), chunks: chunks };
@@ -149,8 +145,9 @@
     return !!srs && typeof srs.box === "number" && srs.box >= 0 && srs.box <= 4 &&
       typeof srs.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(srs.due);
   }
+  // normChunk が null を返す条件（空文字含む）と揃える。緩めると normItem の chunks に null が混入する
   function validChunk(c) {
-    return !!c && typeof c.en === "string" && typeof c.jp === "string";
+    return !!c && typeof c.en === "string" && !!c.en && typeof c.jp === "string" && !!c.jp;
   }
   function validItem(raw) {
     if (!raw || typeof raw.id !== "string" || !raw.id) return false;
@@ -164,13 +161,7 @@
       id: capStr(raw.id, 60),
       jp: capStr(raw.jp, CAP_EN),
       en: capStr(raw.en, CAP_EN),
-      chunks: raw.chunks.map(function (c) {
-        return {
-          en: capStr(c.en, CAP_CHUNK),
-          jp: capStr(c.jp, CAP_CHUNK),
-          note: typeof c.note === "string" ? capStr(c.note, CAP_NOTE) : ""
-        };
-      }),
+      chunks: raw.chunks.map(normChunk),
       altEn: typeof raw.altEn === "string" ? capStr(raw.altEn, CAP_EN) : "",
       altLabel: typeof raw.altLabel === "string" ? capStr(raw.altLabel, 40) : "",
       altNuance: typeof raw.altNuance === "string" ? capStr(raw.altNuance, CAP_NUANCE) : "",

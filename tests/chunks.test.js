@@ -333,6 +333,13 @@ t("cap: validateDoc でも jp/en/altEn が切り詰められる",
   hugeDoc.items[0].jp.length <= 300 && hugeDoc.items[0].en.length <= 300 && hugeDoc.items[0].altEn.length <= 300);
 t("cap: 通常の長さの文字列は変化しない", L.normCandidate(okCand("plain"), 0).en === "I go to school.");
 
+// 空文字チャンクを持つitemはvalidateDocで丸ごと捨てられる（normChunkのnullがchunksに混入しない）
+var emptyChunkDoc = L.validateDoc({
+  version: 1, settings: { rate: 0.85 },
+  items: [{ id: "x2", jp: "テスト", en: "Test.", chunks: [{ en: "", jp: "空" }], srs: null }]
+});
+t("空文字チャンクのitemはvalidateDocで破棄される", emptyChunkDoc.items.length === 0);
+
 console.log("");
 if (ng) { console.error(ng + " / " + n + " 件失敗"); process.exit(1); }
 console.log("全 " + n + " 件パス ✓");
