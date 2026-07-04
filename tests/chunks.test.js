@@ -340,6 +340,33 @@ var emptyChunkDoc = L.validateDoc({
 });
 t("空文字チャンクのitemはvalidateDocで破棄される", emptyChunkDoc.items.length === 0);
 
+// ══════════════════════════════════════════════════════════
+// プロンプト見本（…プレースホルダ）の取り込み防止
+// ══════════════════════════════════════════════════════════
+console.log("― プレースホルダ防止 ―");
+var promptText = C.buildPrompt("キックオフで色々なエンジニアと話せて楽しかった");
+var pr1 = C.parseResult(promptText);
+t("プロンプト自体を貼る→error", pr1.ok === false);
+t("プロンプト自体を貼る→見本と伝える文言", pr1.error.indexOf("見本") !== -1);
+
+var echoThenAnswer = promptText + "\n以下が翻訳です。\n" + candJson([okCand("plain"), okCand("natural")]);
+var pr2 = C.parseResult(echoThenAnswer);
+t("見本の復唱＋本物の回答→ok", pr2.ok === true);
+t("見本の復唱＋本物の回答→本物側が採用される", pr2.candidates[0].en === "I go to school.");
+t("見本の復唱＋本物の回答→候補2件", pr2.candidates.length === 2);
+
+var dotsCand = { label: "plain", nuance: "…", en: "…", chunks: [{ en: "…", jp: "…", note: "…" }] };
+t("en:\"…\"の候補はnormCandidateで破棄", L.normCandidate(dotsCand, 0) === null);
+
+var dotsDoc = L.validateDoc({
+  version: 1, settings: { rate: 0.85 },
+  items: [{ id: "x3", jp: "見本を保存してしまった", en: "…", chunks: [{ en: "…", jp: "…" }], srs: null }]
+});
+t("en:\"…\"の保存済みitemは読み込み時に破棄される", dotsDoc.items.length === 0);
+
+var all = L.extractJsonAll('前置き {"a":1} 中間 {"b":{"c":2}} 後置き');
+t("extractJsonAll: 複数ブロックを出現順に列挙", all.length === 2 && all[0] === '{"a":1}' && all[1] === '{"b":{"c":2}}');
+
 console.log("");
 if (ng) { console.error(ng + " / " + n + " 件失敗"); process.exit(1); }
 console.log("全 " + n + " 件パス ✓");

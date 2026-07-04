@@ -41,16 +41,9 @@
   }
 
   // ── AI返答からのJSON抽出（前置き・後置き・コードフェンスに耐える）──
-  // ①```json〜``` or ```〜``` フェンスがあれば中身を優先
-  // ②なければ最初の { から波括弧の深度を数えて対応する } までを切り出す
-  //   （文字列リテラル内の {} と \" エスケープは深度カウントの対象外にする）
-  function extractJson(text) {
-    if (typeof text !== "string") return null;
-    var fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-    if (fenceMatch) return fenceMatch[1].trim();
-
-    var start = text.indexOf("{");
-    if (start === -1) return null;
+  // scanBalanced: start の "{" に対応する "}" の位置を返す（文字列リテラル内の
+  // {} と \" エスケープは深度カウントの対象外）。見つからなければ -1。
+  function scanBalanced(text, start) {
     var depth = 0, inString = false, escaped = false;
     for (var i = start; i < text.length; i++) {
       var ch = text[i];
@@ -64,10 +57,35 @@
       if (ch === "{") depth++;
       else if (ch === "}") {
         depth--;
-        if (depth === 0) return text.slice(start, i + 1);
+        if (depth === 0) return i;
       }
     }
-    return null;
+    return -1;
+  }
+  // 後方互換API: ①```json〜``` フェンスがあれば最初のフェンスの中身 ②なければ最初の {…}
+  function extractJson(text) {
+    if (typeof text !== "string") return null;
+    var fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fenceMatch) return fenceMatch[1].trim();
+    var start = text.indexOf("{");
+    if (start === -1) return null;
+    var end = scanBalanced(text, start);
+    return end === -1 ? null : text.slice(start, end + 1);
+  }
+  // テキスト中の {…} ブロックを全て列挙（出現順）。プロンプトの見本JSONを復唱した後に
+  // 本物の回答が続くケースに備え、parseResult は末尾側から順に試す。
+  function extractJsonAll(text) {
+    if (typeof text !== "string") return [];
+    var out = [], i = 0;
+    while (i < text.length) {
+      var start = text.indexOf("{", i);
+      if (start === -1) break;
+      var end = scanBalanced(text, start);
+      if (end === -1) break;
+      out.push(text.slice(start, end + 1));
+      i = end + 1;
+    }
+    return out;
   }
 
   // ── 候補の正規化（不正な候補は破棄）─────────────────────
@@ -80,12 +98,17 @@
     s = String(s);
     return s.length > n ? s.slice(0, n) : s;
   }
+  // 英文フィールドは英数字を最低1文字含むこと。プロンプトの見本 "…" や記号だけの
+  // プレースホルダを「翻訳結果」として取り込まないための検査（日本語欄には使わない）。
+  function hasRealText(s) {
+    return /[a-z0-9]/i.test(String(s));
+  }
   function normChunk(raw) {
-    if (!raw || typeof raw.en !== "string" || !raw.en || typeof raw.jp !== "string" || !raw.jp) return null;
+    if (!raw || typeof raw.en !== "string" || !hasRealText(raw.en) || typeof raw.jp !== "string" || !raw.jp) return null;
     return { en: capStr(raw.en, CAP_CHUNK), jp: capStr(raw.jp, CAP_CHUNK), note: typeof raw.note === "string" ? capStr(raw.note, CAP_NOTE) : "" };
   }
   function normCandidate(c, i) {
-    if (!c || typeof c.en !== "string" || !c.en) return null;
+    if (!c || typeof c.en !== "string" || !hasRealText(c.en)) return null;
     if (!Array.isArray(c.chunks) || c.chunks.length < 1 || c.chunks.length > MAX_CHUNKS) return null;
     var chunks = c.chunks.map(normChunk);
     if (chunks.indexOf(null) !== -1) return null;
@@ -108,36 +131,45 @@
   }
 
   // ── AI返答のパース ──────────────────────────────────────
+  // 貼り付けテキスト中の全JSONブロックを末尾側から試す（AIがプロンプトの見本JSONを
+  // 復唱してから本物の回答を書くことがあるため。見本は "…" プレースホルダで弾かれる）。
   function parseResult(text) {
-    var jsonText = extractJson(text);
-    if (!jsonText) {
+    var texts = extractJsonAll(text);
+    if (!texts.length) {
       return { ok: false, error: "JSONが見つかりません。AIの返答を最初から最後までそのまま貼り付けてください。" };
     }
-    var data;
-    try {
-      data = JSON.parse(jsonText);
-    } catch (e) {
-      return { ok: false, error: "JSONの形が壊れています。AIにもう一度『JSONだけを出力して』と頼んでください。" };
+    var parsedAny = false, sawPlaceholder = false;
+    for (var k = texts.length - 1; k >= 0; k--) {
+      var data;
+      try { data = JSON.parse(texts[k]); } catch (e) { continue; }
+      if (!data) continue;
+      parsedAny = true;
+      if (!Array.isArray(data.candidates) || data.candidates.length === 0) continue;
+      var candidates = [];
+      for (var i = 0; i < data.candidates.length; i++) {
+        var norm = normCandidate(data.candidates[i], i);
+        if (norm) candidates.push(norm);
+      }
+      if (candidates.length === 0) {
+        if (texts[k].indexOf('"en":"…"') !== -1) sawPlaceholder = true; // 見本JSONの痕跡
+        continue;
+      }
+      if (candidates.length > 2) candidates = candidates.slice(0, 2);
+
+      var warns = [];
+      if (candidates.length === 1) warns.push("候補が1つだけ返りました。");
+      var hasMismatch = candidates.some(function (c) { return !joinMatches(c); });
+      if (hasMismatch) warns.push("チャンクの結合が全文と一致しません（AIの分割ミスの可能性）。");
+
+      return { ok: true, candidates: candidates, warns: warns };
     }
-    if (!data || !Array.isArray(data.candidates) || data.candidates.length === 0) {
+    if (sawPlaceholder) {
+      return { ok: false, error: "貼られたのはプロンプトの見本（…）のようです。プロンプトをAIに送り、返ってきた翻訳結果を貼り付けてください。" };
+    }
+    if (parsedAny) {
       return { ok: false, error: "翻訳候補が読み取れません。プロンプトを再コピーして最初からやり直してください。" };
     }
-    var candidates = [];
-    for (var i = 0; i < data.candidates.length; i++) {
-      var norm = normCandidate(data.candidates[i], i);
-      if (norm) candidates.push(norm);
-    }
-    if (candidates.length === 0) {
-      return { ok: false, error: "翻訳候補が読み取れません。プロンプトを再コピーして最初からやり直してください。" };
-    }
-    if (candidates.length > 2) candidates = candidates.slice(0, 2);
-
-    var warns = [];
-    if (candidates.length === 1) warns.push("候補が1つだけ返りました。");
-    var hasMismatch = candidates.some(function (c) { return !joinMatches(c); });
-    if (hasMismatch) warns.push("チャンクの結合が全文と一致しません（AIの分割ミスの可能性）。");
-
-    return { ok: true, candidates: candidates, warns: warns };
+    return { ok: false, error: "JSONの形が壊れています。AIにもう一度『JSONだけを出力して』と頼んでください。" };
   }
 
   // ── ドキュメント検証（壊れたitemsは黙って捨てる）─────────
@@ -145,14 +177,15 @@
     return !!srs && typeof srs.box === "number" && srs.box >= 0 && srs.box <= 4 &&
       typeof srs.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(srs.due);
   }
-  // normChunk が null を返す条件（空文字含む）と揃える。緩めると normItem の chunks に null が混入する
+  // normChunk が null を返す条件（空文字・"…"プレースホルダ含む）と揃える。
+  // 緩めると normItem の chunks に null が混入する
   function validChunk(c) {
-    return !!c && typeof c.en === "string" && !!c.en && typeof c.jp === "string" && !!c.jp;
+    return !!c && typeof c.en === "string" && hasRealText(c.en) && typeof c.jp === "string" && !!c.jp;
   }
   function validItem(raw) {
     if (!raw || typeof raw.id !== "string" || !raw.id) return false;
     if (typeof raw.jp !== "string" || !raw.jp) return false;
-    if (typeof raw.en !== "string" || !raw.en) return false;
+    if (typeof raw.en !== "string" || !hasRealText(raw.en)) return false;
     if (!Array.isArray(raw.chunks) || raw.chunks.length < 1) return false;
     return raw.chunks.every(validChunk);
   }
@@ -288,6 +321,7 @@
     gradeItem3: gradeItem3,
     logic: {
       extractJson: extractJson,
+      extractJsonAll: extractJsonAll,
       normCandidate: normCandidate,
       joinMatches: joinMatches,
       validateDoc: validateDoc
