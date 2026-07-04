@@ -80,7 +80,12 @@ body:not(.view-home) header{margin-bottom:.4rem}
 .ck-note{font-size:.78rem;color:var(--ink-soft);margin-top:.5rem}
 
 /* ── add: paste ─────────────────────────────────────── */
-.ck-lead{font-size:.9rem;color:var(--ink-soft);margin-bottom:.7rem;line-height:1.6}
+.ck-lead{font-size:.9rem;color:var(--ink-soft);margin-bottom:.7rem;line-height:1.8}
+.ck-ailinks{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem}
+.ck-ailink{display:inline-flex;align-items:center;min-height:44px;padding:0 1.1rem;
+  border:1px solid var(--accent);color:var(--accent);border-radius:var(--pill);
+  font-size:.9rem;font-weight:700;text-decoration:none}
+.ck-ailink:active{transform:scale(.98)}
 .ck-warn{background:var(--danger-soft);color:var(--danger);border-radius:11px;
   padding:.6rem .8rem;font-size:.85rem;margin-bottom:.8rem}
 .ck-warn a,.ck-warn button.ck-link{color:var(--danger);font-weight:700;text-decoration:underline;

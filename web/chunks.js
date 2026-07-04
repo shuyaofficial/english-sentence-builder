@@ -137,7 +137,18 @@
         var warn = S.parseError
           ? '<div class="ck-warn">' + esc(S.parseError) + '　<button class="ck-link" data-act="recopy">プロンプトを再コピー</button></div>'
           : "";
-        return warn + '<div class="ck-lead">ChatGPT・Claude・Gemini などにプロンプトを貼り、返ってきた答えを<b>そのまま全部</b>下に貼り付けてください</div>' +
+        // プロンプトを ?q= で自動入力した状態でAIを開けるリンク（送信して返答をコピーして戻るだけにする）
+        var q = encodeURIComponent(ChunkData.buildPrompt(S.addJp.trim()));
+        var ai = '<div class="ck-ailinks">' +
+          '<a class="ck-ailink" href="https://chatgpt.com/?q=' + q + '" target="_blank" rel="noopener">ChatGPTで開く ↗</a>' +
+          '<a class="ck-ailink" href="https://claude.ai/new?q=' + q + '" target="_blank" rel="noopener">Claudeで開く ↗</a>' +
+          '</div>';
+        return warn +
+          '<div class="ck-lead">' +
+          '<b>1.</b> 下のボタンでAIを開いて送信（プロンプトは入力済み。他のAIならコピー済みのプロンプトを貼る）<br>' +
+          '<b>2.</b> AIが返した答えを<b>そのまま全部コピー</b><br>' +
+          '<b>3.</b> ここに戻って貼り付け →「取り込む」</div>' +
+          ai +
           '<div class="ck-panel"><textarea id="add-paste" class="ck-textarea" rows="8" placeholder="AIの返答をそのまま貼り付け">' + esc(S.pasteText) + '</textarea></div>';
       }
       function renderAddPick() {
