@@ -24,17 +24,29 @@
     } catch (e) { }
   }
 
+  /* opt.enqueue: true なら再生中をキャンセルせずネイティブキューに積む（逐次再生用）。
+   * opt.onstart/onend/onerror: utteranceイベントの横流し。
+   * 戻り値の utterance は呼び出し側で参照保持できる（ChromeはGCされると onend が来ない）。 */
   function speak(text, opt) {
-    if (!text || !window.speechSynthesis) return;
+    if (!text || !window.speechSynthesis) return null;
+    opt = opt || {};
     try {
-      speechSynthesis.cancel();
+      if (!opt.enqueue) speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);
       u.lang = "en-US";
-      u.rate = (opt && opt.rate) || 0.95;
+      u.rate = opt.rate || 0.95;
       if (!chosen) refresh();
       if (chosen) u.voice = chosen;
+      if (opt.onstart) u.onstart = opt.onstart;
+      if (opt.onend) u.onend = opt.onend;
+      if (opt.onerror) u.onerror = opt.onerror;
       speechSynthesis.speak(u);
-    } catch (e) { }
+      return u;
+    } catch (e) { return null; }
+  }
+
+  function cancel() {
+    try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { }
   }
 
   if (window.speechSynthesis) {
@@ -42,5 +54,5 @@
     if ("onvoiceschanged" in speechSynthesis) speechSynthesis.onvoiceschanged = refresh;
   }
 
-  window.Speech = { speak: speak };
+  window.Speech = { speak: speak, cancel: cancel, available: !!window.speechSynthesis };
 })();

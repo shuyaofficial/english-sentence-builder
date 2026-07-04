@@ -4,8 +4,8 @@
  */
 "use strict";
 
-var CACHE = "srb-v1";
-var ASSETS = ["./", "index.html", "app.css", "grammar.js", "speech.js", "phrases.js", "quiz.js", "app.js", "sentence_builder_data.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
+var CACHE = "srb-v2";
+var ASSETS = ["./", "index.html", "app.css", "grammar.js", "speech.js", "phrases.js", "quiz.js", "app.js", "sentence_builder_data.js", "chunks.html", "chunks.css", "chunks-data.js", "chunks-player.js", "chunks.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 
 // install: 1つの404で全滅しないよう各アセットを個別にキャッシュ（addAllは使わない）
 self.addEventListener("install", function (e) {

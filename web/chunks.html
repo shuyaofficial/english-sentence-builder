@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2f7d6b">
+<title>チャンクリーディング — 意味のかたまりで読む・話す</title>
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="chunks.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">CHUNK READING</div>
+    <h1>チャンクリーディング</h1>
+    <p class="lead">日本語を書いて、AIに翻訳・分割してもらい、意味のかたまり（チャンク）で聞いて話す。</p>
+    <a href="./">← 英文組み立てへ</a>
+  </header>
+
+  <main id="view"></main>
+</div>
+<div id="stickybar" class="stickybar"></div>
+
+<script src="speech.js"></script>
+<script src="chunks-data.js"></script>
+<script src="chunks-player.js"></script>
+<script src="chunks.js"></script>
+</body>
+</html>
